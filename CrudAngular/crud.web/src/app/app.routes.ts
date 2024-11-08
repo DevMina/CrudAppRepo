@@ -25,7 +25,7 @@ export const routes: Routes = [
     imports: [
       BrowserModule,
       FormsModule,
-      RouterModule.forRoot(routes) // Add this line
+      RouterModule.forRoot(routes)
     ],
     providers: [],
     bootstrap: []
