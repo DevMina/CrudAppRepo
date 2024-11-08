@@ -1,6 +1,8 @@
-﻿using CrudApp.Application.Interfaces;
+﻿using CrudApp.Application.DTOs;
+using CrudApp.Application.Interfaces;
 using CrudApp.Core.Entities;
 using CrudApp.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace CrudApp.Application.Implementation
 {
@@ -12,25 +14,54 @@ namespace CrudApp.Application.Implementation
         {
             _repository = repository;
         }
-
-        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+        private EmployeeDto MapFromModelToDto(Employee employee)
         {
-            return await _repository.GetAllAsync();
+            var employeeDto = new EmployeeDto()
+            {
+                Id = employee.Id,
+                Address = employee.Address,
+                Email = employee.Email,
+                Mobile = employee.Mobile,
+                Name = employee.Name,
+            };
+            return employeeDto;
+        }
+        private Employee MapFromDtoToModel(EmployeeDto employeeDto)
+        {
+            var employee = new Employee()
+            {
+                Id = employeeDto.Id,
+                Address = employeeDto.Address,
+                Email = employeeDto.Email,
+                Mobile = employeeDto.Mobile,
+                Name = employeeDto.Name,
+            };
+            return employee;
+        }
+        public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
+        {
+            List<EmployeeDto> employeesDto;
+            IEnumerable<Employee> employees = await _repository.GetAllAsync();
+            employeesDto = new List<EmployeeDto>();
+            foreach (Employee employee in employees) {
+                employeesDto.Add(MapFromModelToDto(employee));
+            }
+            return employeesDto;
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(int id)
+        public async Task<EmployeeDto> GetEmployeeByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            return MapFromModelToDto(await _repository.GetByIdAsync(id));
         }
 
-        public async Task AddEmployeeAsync(Employee employee)
+        public async Task AddEmployeeAsync(EmployeeDto employeeDto)
         {
-            await _repository.AddAsync(employee);
+            await _repository.AddAsync(MapFromDtoToModel(employeeDto));
         }
 
-        public async Task UpdateEmployeeAsync(Employee employee)
+        public async Task UpdateEmployeeAsync(EmployeeDto employeeDto)
         {
-            _repository.Update(employee);
+            _repository.Update(MapFromDtoToModel(employeeDto));
         }
 
         public async Task DeleteEmployeeAsync(int id)

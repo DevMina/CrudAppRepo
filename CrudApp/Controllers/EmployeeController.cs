@@ -21,44 +21,32 @@ namespace CrudApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var employees = await _employeeService.GetAllEmployeesAsync();
-            return Ok(employees);
+            var employeesDto = await _employeeService.GetAllEmployeesAsync();
+            return Ok(employeesDto);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var employee = await _employeeService.GetEmployeeByIdAsync(id);
-            if (employee == null) return NotFound();
-            return Ok(employee);
+            var employeeDto = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employeeDto == null) return NotFound();
+            return Ok(employeeDto);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(EmployeeDto employeeDto)
         {
-            var employee = new Employee // Map DTO to Entity
-            {
-                Name = employeeDto.Name,
-                Address = employeeDto.Address,
-                Mobile = employeeDto.Mobile,
-                Email = employeeDto.Email
-            };
-            await _employeeService.AddEmployeeAsync(employee);
-            return CreatedAtAction(nameof(GetById), new { id = employee.Id }, employee);
+            await _employeeService.AddEmployeeAsync(employeeDto);
+            return CreatedAtAction(nameof(GetById), new { id = employeeDto.Id }, employeeDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, EmployeeDto employeeDto)
+        public async Task<IActionResult> Update(int id, EmployeeDto employeeDtoToUpdate)
         {
-            var employee = await _employeeService.GetEmployeeByIdAsync(id);
-            if (employee == null) return NotFound();
+            var employeeDto = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employeeDto == null) return NotFound();
 
-            employee.Name = employeeDto.Name;
-            employee.Address = employeeDto.Address;
-            employee.Mobile = employeeDto.Mobile;
-            employee.Email = employeeDto.Email;
-
-            await _employeeService.UpdateEmployeeAsync(employee);
+            await _employeeService.UpdateEmployeeAsync(employeeDto);
             return NoContent();
         }
 
