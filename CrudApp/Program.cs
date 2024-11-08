@@ -15,7 +15,6 @@ builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IRepository<Employee>, Repository<Employee>>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -27,7 +26,6 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -36,7 +34,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseCors("AllowAll");
-//app.UseEndpoints(endpoints => endpoints.MapControllers());
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
